@@ -1,12 +1,18 @@
 import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { Alert, Button, Platform, StyleSheet, TouchableHighlight, View , Text, TouchableOpacity, TextInput} from 'react-native';
 
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { rgbaColor } from 'react-native-reanimated/lib/typescript/Colors';
+import { useState } from 'react';
 
 export default function HomeScreen() {
+
+  // let text = 'text';
+  const [text, setText] = useState('text');
+
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
@@ -17,7 +23,10 @@ export default function HomeScreen() {
         />
       }>
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
+        <ThemedText type="title" style={{
+          color: 'rgb(215, 77, 190)',
+          boxShadow: '2px 2px 3px rgb(245, 127, 221)'
+        }}>Welcome!</ThemedText>
         <HelloWave />
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
@@ -43,6 +52,25 @@ export default function HomeScreen() {
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
         <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
+        <Button
+          title="press me"
+          onPress={() => Alert.alert('You just clicked a button')}
+        />
+        <TouchableHighlight onPress={() => {}}>
+          <View style={styles.button}>
+            <Text>Touch Here</Text>
+          </View>
+        </TouchableHighlight>
+        <TouchableOpacity style={styles.button} onPress={() => {Alert.alert('why You clicked me? are You bored?')}}>
+          <Text>Press Here</Text>
+        </TouchableOpacity>
+        <TextInput
+          style={styles.input}
+          onChangeText={(value) => {
+            setText(value);
+          }}
+          value={text}
+        />
         <ThemedText>
           {`When you're ready, run `}
           <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
@@ -72,4 +100,14 @@ const styles = StyleSheet.create({
     left: 0,
     position: 'absolute',
   },
+  button: {
+    backgroundColor: 'rgb(178, 236, 180)',
+    height: 34,
+    alignItems: 'center'
+  },
+  input: {
+    minWidth: 200,
+    backgroundColor: 'white',
+    borderWidth: 1,
+  }
 });
