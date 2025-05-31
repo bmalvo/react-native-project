@@ -1,5 +1,4 @@
-import { ThemedText } from "@/components/ThemedText"
-import { Text, View, StyleSheet } from "react-native"
+import { Text, View, StyleSheet, ScrollView } from "react-native"
 import Feather from '@expo/vector-icons/Feather';
 import { COLORS } from "../themes/colors";
 import {FollowingDays} from "../components/FollowingDays";
@@ -23,21 +22,26 @@ const FOLLOWING_DAYS = [{
 export const Dashboard = () => {
 
     return <>
-        {/* <ThemedText>Dashboard</ThemedText> */}
-        <View style={styles.container}>
-            <Text style={styles.cityName}>Warszawa</Text>
-            <Text style={styles.temperature}>22°</Text>
-            <View style={styles.weatherContainer}>
-            <Feather name="sun" size={100} color={COLORS.sun} style={styles.sun} />
-            <Text style={styles.weather}>Słonecznie</Text>
+        <ScrollView>
+
+            <View style={styles.container}>
+                <Text style={styles.cityName}>Warszawa</Text>
+                <Text style={styles.temperature}>22°</Text>
+                <View style={styles.weatherContainer}>
+                    <Feather name="sun" size={100} color={COLORS.sun} style={styles.sun} />
+                    <Text style={styles.weather}>Słonecznie</Text>
+                </View>
+                <View style={styles.followingDaysContainer}>
+
+                    {FOLLOWING_DAYS.map((day, index) => (
+                        <>
+                            <FollowingDays day={day} key={index} isLast={ index === FOLLOWING_DAYS.length - 1} />
+                        </>
+                    )
+                    )}
+                </View>
             </View>
-            {FOLLOWING_DAYS.map((day, index) => (
-                <>
-                    <FollowingDays item={day} index={ index} />
-                </>
-            )
-            )}
-        </View>
+        </ScrollView>
     </>
 }
 
@@ -71,5 +75,13 @@ const styles = StyleSheet.create({
         fontSize: 26,
         color: COLORS.text,
         backgroundColor: COLORS.background
+    },
+    followingDaysContainer: {
+        margin: 20,
+        marginTop: 40,
+        backgroundColor: COLORS.lightBlue,
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+        borderRadius: 10
     }
 })
