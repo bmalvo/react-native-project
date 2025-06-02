@@ -1,27 +1,40 @@
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
-import Feather from '@expo/vector-icons/Feather';
+import { StyleSheet, Text, View, Image } from 'react-native'
 import { COLORS } from '../themes/colors';
+import dayjs from 'dayjs';
+import 'dayjs/locale/pl';
+import isToday from 'dayjs/plugin/isToday';
+
+dayjs.extend(isToday);
+dayjs.locale('pl');
 
 
 type ItemsProps = {
     day: {
-        name: string;
-        value: number;
-        type: string;
+        date: string;
+        day: {
+            mintemp_c: number;
+            maxtemp_c: number;
+            condition: {
+                icon: string;
+            }
+        }
     },
-    isLast: boolean
-}
+    isLast: boolean;
+};
 
-export const FollowingDays = ({day, isLast}: ItemsProps) => {
+export const FollowingDays = ({ day, isLast }: ItemsProps) => {
+    
+    const date = dayjs(day.date).isToday() ? 'Dzisiaj' : dayjs(day.date).format("dddd")
+
     return (
         <View style={[styles.container, !isLast && styles.separator]}>
-            <Text  style={ styles.content}>{day.name} </Text>
-            <Text style={ [styles.content, styles.value]}>{day.value}</Text>
-            <Feather name="sun" size={40} color={COLORS.sun} style={(styles.sun, styles.content, styles.type)} />
+            <Text style={styles.content}>{date} </Text>
+            <Text style={[styles.content, styles.value]}>min-{Math.floor(day.day.mintemp_c)}° max-{Math.ceil(day.day.maxtemp_c)}°</Text>
+            <Image source={{ uri: `https://${day.day.condition.icon}` }} width={40} height={40} resizeMode="contain" />
         </View>
     )
-}
+};
 
 
 const styles = StyleSheet.create({
@@ -31,10 +44,10 @@ const styles = StyleSheet.create({
     },
     container: {
         flexDirection: 'row',
-        // backgroundColor: 'red',
         width: '100%',
         alignItems: 'center',
         justifyContent: 'space-between',
+        minHeight: 40
     },
     content: {
         flex: 1,

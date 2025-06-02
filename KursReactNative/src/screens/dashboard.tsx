@@ -1,83 +1,86 @@
-import { Text, View, StyleSheet, ScrollView, ActivityIndicator } from "react-native"
-import Feather from '@expo/vector-icons/Feather';
+import { Text, View, StyleSheet, ScrollView, ActivityIndicator, Image } from "react-native"
 import { COLORS } from "../themes/colors";
 import {FollowingDays} from "../components/FollowingDays";
 import { useEffect, useState } from "react";
-import { fetchCityData } from "../services/api";
+import { fetchCityData, fetchFollowingDays } from "../services/api";
+import Footer from "../components/Footer";
 
-const FOLLOWING_DAYS = [{
-    name: 'dzisiaj',
-    value: 22,
-    type: 'sun'
-},
-{
-    name: 'wtorek',
-    value: 17,
-    type: 'sun'
-},{
-    name: 'środa',
-    value: 14,
-    type: 'sun'
-}
-]
 
 type CurrentWeather = {
+
     location: {
         name: string;
-        // add other properties if needed
     };
     current: {
         temp_c: number;
+        condition: {
+            text: string;
+            icon: string;
+        }
+    },
+};
+
+type NextDays = {
+    date: string;
+    day: {
+        mintemp_c: number;
+        maxtemp_c: number;
+        condition: {
+            icon: string;
+        }
     }
-    // add other properties if needed
-}
+};
 
 export const Dashboard = () => {
 
-    const [current, setCurrent] = useState<CurrentWeather | null>(null);
+    const [weatherData, setWeatherData] = useState<CurrentWeather | null>(null);
+    const [nextDays, setNextDays] = useState<NextDays[] | null>(null);
 
     useEffect(() => {
 
         const init = async () => {
 
             const response = await fetchCityData()
-            setCurrent(response)
-        }
+            setWeatherData(response)
+
+            const resNextDays = await fetchFollowingDays()
+            setNextDays(resNextDays)
+        };
 
         init()
     }, []);
 
-    if (!current) {
+    if (!weatherData || !nextDays) {
         
         return <ActivityIndicator color={COLORS.sun} size='large' style={{
             height: '100%',
             backgroundColor: COLORS.background
         }} />
-    }
+    };
 
     return <>
         <ScrollView>
-
             <View style={styles.container}>
-                <Text style={styles.cityName}>{ current.location.name}</Text>
-                <Text style={styles.temperature}>{ current.current.temp_c}°</Text>
+                <Text style={styles.cityName}>{weatherData.location.name}</Text>
+                <Text style={styles.temperature}>{weatherData.current.temp_c}°</Text>
                 <View style={styles.weatherContainer}>
-                    <Feather name="sun" size={100} color={COLORS.sun} style={styles.sun} />
-                    <Text style={styles.weather}>Słonecznie</Text>
+                    {/* <Feather name="sun" size={100} color={COLORS.sun} style={styles.sun} /> */}
+                    <Image source={{ uri: `https://${weatherData.current.condition.icon}` }} width={130} height={130} resizeMode="contain" />
+                    <Text style={styles.weather}>{weatherData.current.condition.text}</Text>
                 </View>
                 <View style={styles.followingDaysContainer}>
 
-                    {FOLLOWING_DAYS.map((day, index) => (
+                    {nextDays!.map((day: NextDays, index: number, allDays: NextDays[]) => (
                         <>
-                            <FollowingDays day={day} key={index} isLast={ index === FOLLOWING_DAYS.length - 1} />
+                            <FollowingDays day={day} key={day.date} isLast={index === allDays.length - 1} />
                         </>
-                    )
-                    )}
+                    ))}
                 </View>
             </View>
+            <Footer />
         </ScrollView>
     </>
-}
+};
 
 const styles = StyleSheet.create({
 
@@ -118,4 +121,4 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         borderRadius: 10
     }
-})
+});
