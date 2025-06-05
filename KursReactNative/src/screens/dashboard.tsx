@@ -4,6 +4,7 @@ import {FollowingDays} from "../components/FollowingDays";
 import { useEffect, useState } from "react";
 import { fetchCityData, fetchFollowingDays } from "../services/api";
 import Footer from "../components/Footer";
+import { FollowingDay } from "../types/api";
 
 
 type CurrentWeather = {
@@ -20,21 +21,21 @@ type CurrentWeather = {
     },
 };
 
-type NextDays = {
-    date: string;
-    day: {
-        mintemp_c: number;
-        maxtemp_c: number;
-        condition: {
-            icon: string;
-        }
-    }
-};
+// type NextDays = {
+//     date: string;
+//     day: {
+//         mintemp_c: number;
+//         maxtemp_c: number;
+//         condition: {
+//             icon: string;
+//         }
+//     }
+// };
 
 export const Dashboard = () => {
 
     const [weatherData, setWeatherData] = useState<CurrentWeather | null>(null);
-    const [nextDays, setNextDays] = useState<NextDays[] | null>(null);
+    const [nextDays, setNextDays] = useState<FollowingDay | null>(null);
 
     useEffect(() => {
 
@@ -70,9 +71,9 @@ export const Dashboard = () => {
                 </View>
                 <View style={styles.followingDaysContainer}>
 
-                    {nextDays!.map((day: NextDays, index: number, allDays: NextDays[]) => (
+                    {nextDays.forecast.forcastday.map((day, index, allDays) => (
                         <>
-                            <FollowingDays day={day} key={day.date} isLast={index === allDays.length - 1} />
+                            <FollowingDays day={day} key={day?.date} isLast={index === allDays.length - 1} />
                         </>
                     ))}
                 </View>
