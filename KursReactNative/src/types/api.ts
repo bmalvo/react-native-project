@@ -141,5 +141,5 @@ export type FollowingDay = {
     lacation: Location;
     current: Current;
     forecast: {
-        forcastday: ForcastDay[]}
+        forecastday: ForcastDay[]}
 };

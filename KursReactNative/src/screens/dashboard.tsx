@@ -71,7 +71,7 @@ export const Dashboard = () => {
                 </View>
                 <View style={styles.followingDaysContainer}>
 
-                    {nextDays.forecast.forcastday.map((day, index, allDays) => (
+                    {nextDays.forecast.forecastday.map((day, index, allDays) => (
                         <>
                             <FollowingDays day={day} key={day?.date} isLast={index === allDays.length - 1} />
                         </>

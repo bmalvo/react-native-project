@@ -1,9 +1,17 @@
 import { StyleSheet } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { Dashboard } from '../../src/screens/dashboard';
+import DayDetails from '@/src/screens/dayDetails';
+
+import dayjs from 'dayjs';
+import 'dayjs/locale/pl';
+import isToday from 'dayjs/plugin/isToday';
+
+dayjs.extend(isToday);
+dayjs.locale('pl');
+
 
 export default function HomeScreen() {
 
@@ -12,7 +20,8 @@ export default function HomeScreen() {
       <StatusBar style='light' />
       <SafeAreaView style={styles.container}>
         <ThemedView>
-          <Dashboard />
+          {/* <Dashboard /> */}
+          <DayDetails />
         </ThemedView>
       </SafeAreaView>
     </SafeAreaProvider>
