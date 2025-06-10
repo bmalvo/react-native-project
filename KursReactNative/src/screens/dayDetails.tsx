@@ -1,45 +1,19 @@
-import { ActivityIndicator, FlatList, Image, StyleSheet, Text, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import { CityData, FollowingDay } from '../types/api';
-import { fetchCityData, fetchFollowingDays } from '../services/api';
+import { FlatList, Image, StyleSheet, Text, View } from 'react-native'
+import React from 'react'
 import { COLORS } from '../themes/colors';
 import dayjs from 'dayjs';
 import ListItems from '../components/ListItems';
+import { RouteProp, useRoute} from '@react-navigation/native';
+import { RootStackParamList } from '../navigation/Root';
 
 
 const DayDetails = () => {
 
-  const [weatherData, setWeatherData] = useState<null | CityData>(null);
-  const [nextDays, setNextDays] = useState<null | FollowingDay>(null);
-  
-  useEffect(() => {
-  
-    const init = async () => {
-  
-      const response = await fetchCityData()
-      setWeatherData(response)
-  
-      const resNextDays = await fetchFollowingDays()
-      setNextDays(resNextDays)
-    };
-  
-    init()
-  }, []);
-  
-  if (!weatherData || !nextDays) {
-          
-    return <ActivityIndicator color={COLORS.sun} size='large' style={{
-      height: '100%',
-      backgroundColor: COLORS.background
-    }} />
-  };
+  const { params: { day, locationName } } = useRoute<RouteProp<RootStackParamList, 'DayDetails'>>();
 
-  const day = nextDays.forecast.forecastday[0] || 'today';
-  const locationName = 'Kwidzyn';
 
   return (
     <FlatList
-      
       contentContainerStyle={{ paddingBottom: 20 }}
       data={day.hour}
       ListHeaderComponent={
@@ -58,7 +32,7 @@ const DayDetails = () => {
             <ListItems
               key={hour.time}
               isLast={isLast}
-              title={hour.time}
+              title={dayjs(hour.time).format('HH:mm')}
               value={hour.temp_c}
               condition={hour.condition}
             />

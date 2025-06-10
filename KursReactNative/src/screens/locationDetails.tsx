@@ -21,18 +21,7 @@ type CurrentWeather = {
     },
 };
 
-// type NextDays = {
-//     date: string;
-//     day: {
-//         mintemp_c: number;
-//         maxtemp_c: number;
-//         condition: {
-//             icon: string;
-//         }
-//     }
-// };
-
-export const Dashboard = () => {
+export const LocationDetails = () => {
 
     const [weatherData, setWeatherData] = useState<CurrentWeather | null>(null);
     const [nextDays, setNextDays] = useState<FollowingDay | null>(null);
@@ -65,7 +54,6 @@ export const Dashboard = () => {
                 <Text style={styles.cityName}>{weatherData.location.name}</Text>
                 <Text style={styles.temperature}>{weatherData.current.temp_c}°</Text>
                 <View style={styles.weatherContainer}>
-                    {/* <Feather name="sun" size={100} color={COLORS.sun} style={styles.sun} /> */}
                     <Image source={{ uri: `https://${weatherData.current.condition.icon}` }} width={130} height={130} resizeMode="contain" />
                     <Text style={styles.weather}>{weatherData.current.condition.text}</Text>
                 </View>
@@ -73,7 +61,11 @@ export const Dashboard = () => {
 
                     {nextDays.forecast.forecastday.map((day, index, allDays) => (
                         <>
-                            <FollowingDays day={day} key={day?.date} isLast={index === allDays.length - 1} />
+                            <FollowingDays
+                                day={day}
+                                key={day.date}
+                                isLast={index === allDays.length - 1}
+                                locationName={weatherData.location.name} />
                         </>
                     ))}
                 </View>
